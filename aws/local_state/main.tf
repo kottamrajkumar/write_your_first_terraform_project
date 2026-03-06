@@ -10,11 +10,21 @@ terraform {
 }
 
 provider "aws" {
-  region  = "eu-west-2"
+  region = "eu-west-2"
+}
+
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
 }
 
 resource "aws_instance" "app_server" {
-  ami           = "ami-830c94e3"
+  ami           = data.aws_ami.amazon_linux.id
   instance_type = "t2.micro"
 
   tags = {
